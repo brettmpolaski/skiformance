@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Car</title>
+    <style>
+        :root {
+            --page-bg: #0d1117;
+            --panel: #161b22;
+            --panel-soft: #202632;
+            --text: #eef2f6;
+            --muted: #acb3bd;
+            --line: #303a45;
+            --accent: #ff4d4d;
+            --accent-2: #ffd166;
+            --shadow: rgba(0,0,0,.35);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Avenir Next', 'Helvetica Neue', 'Montserrat', 'Arial', sans-serif;
+            margin: 0;
+            color: var(--text);
+            background: var(--page-bg);
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .shell { max-width: 900px; margin: 0 auto; }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 24px;
+        }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand-mark {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: var(--accent); color: #fff; display: grid; place-items: center;
+            font-weight: 900;
+        }
+        .brand h1 { margin: 0; color: var(--text); font-size: 26px; }
+        .back-btn { background: var(--panel-soft); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 10px 16px; text-decoration: none; font-weight: 700; }
+        .form-section { background: var(--panel); border-radius: 14px; border: 1px solid var(--line); padding: 24px; box-shadow: 0 12px 30px var(--shadow); }
+        h2 { margin-top: 0; color: var(--accent-2); }
+        form { display: flex; flex-direction: column; gap: 16px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+        input, button { padding: 11px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel-soft); color: var(--text); }
+        input::placeholder { color: #78818f; }
+        button { background: var(--accent); color: #fff; border: none; font-weight: 900; cursor: pointer; width: fit-content; padding: 12px 22px; }
+        button:hover { background: #cc0000; }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-mark">G</div>
+                <div>
+                    <h1>Garage Control</h1>
+                </div>
+            </div>
+            <a class="back-btn" href="/">← Garage</a>
+        </div>
+
+        <div class="form-section">
+            <h2>Park a New Project Car</h2>
+            <form action="/add_car" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="number" name="year" placeholder="e.g., 1999" required min="1900" max="2027">
+                    </div>
+                    <div class="form-group">
+                        <label>Make</label>
+                        <input type="text" name="make" placeholder="e.g., Honda, Ford, BMW" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Model</label>
+                        <input type="text" name="model" placeholder="e.g., Civic, Mustang, M3" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Trim / Package</label>
+                        <input type="text" name="trim" placeholder="e.g., Si, GT, Competition" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Build Budget ($)</label>
+                        <input type="number" name="budget" placeholder="e.g., 5000" step="0.01" required>
+                    </div>
+                </div>
+                <button type="submit">Add Car to Garage</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

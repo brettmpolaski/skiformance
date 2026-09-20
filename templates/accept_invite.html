@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garage Control Invite</title>
+    <style>
+        :root {
+            --page-bg: #0d1117;
+            --panel: #161b22;
+            --panel-soft: #202632;
+            --text: #eef2f6;
+            --muted: #acb3bd;
+            --line: #303a45;
+            --accent: #ff4d4d;
+            --accent-2: #ffd166;
+            --shadow: rgba(0,0,0,.35);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Avenir Next', 'Helvetica Neue', 'Montserrat', 'Arial', sans-serif;
+            margin: 0;
+            color: var(--text);
+            background: var(--page-bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .auth-shell {
+            width: min(460px, 100%);
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: 0 12px 30px var(--shadow);
+            padding: 28px;
+        }
+        h1 { margin-top: 0; color: var(--accent-2); font-size: 30px; }
+        p { color: var(--muted); }
+        button { background: var(--accent); color: #fff; font-weight: 900; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; }
+        button:hover { background: #cc0000; }
+        .links { margin-top: 16px; color: var(--muted); font-size: 13px; }
+        .links a { color: var(--accent-2); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="auth-shell">
+        <h1>Accept Invitation</h1>
+        <p>{{ message }}</p>
+        {% if invite_link %}
+        <a class="links" href="{{ invite_link }}">Continue</a>
+        {% endif %}
+    </div>
+</body>
+</html>

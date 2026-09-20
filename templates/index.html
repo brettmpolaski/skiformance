@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ car.year }} {{ car.make }} {{ car.model }} Build Planner</title>
+    <style>
+        :root {
+            --page-bg: #0d1117;
+            --panel: #161b22;
+            --panel-soft: #202632;
+            --text: #eef2f6;
+            --muted: #acb3bd;
+            --line: #303a45;
+            --accent: #ff4d4d;
+            --accent-2: #ffd166;
+            --good: #71f0a8;
+            --shadow: rgba(0,0,0,.35);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Avenir Next', 'Helvetica Neue', 'Montserrat', 'Arial', sans-serif;
+            margin: 0;
+            color: var(--text);
+            background: var(--page-bg);
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .shell { max-width: 1100px; margin: 0 auto; }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        .brand { display: flex; align-items: center; gap: 14px; }
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 900;
+            font-size: 20px;
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+        .brand h1 { margin: 0; font-size: 28px; color: var(--text); }
+        .tagline { color: var(--muted); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+        .back-btn {
+            background: var(--panel-soft);
+            color: var(--text);
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid var(--line);
+            font-weight: 700;
+        }
+        .back-btn:hover { background-color: var(--line); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 12px 30px var(--shadow);
+        }
+        .stat-card h3 { margin: 0 0 10px; color: var(--muted); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+        .stat-card p { margin: 0; font-size: 26px; font-weight: 800; color: var(--text); }
+        .stat-card.good p { color: var(--good); }
+        .section-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 12px 30px var(--shadow);
+            margin-bottom: 24px;
+        }
+        .section-card h2 { margin-top: 0; font-size: 22px; color: var(--accent-2); }
+        .section-card h3 { margin: 0 0 12px; color: var(--accent-2); }
+        .part-form { display: flex; gap: 14px; flex-wrap: wrap; align-items: end; }
+        .part-form .field { display: flex; flex-direction: column; gap: 6px; min-width: 170px; }
+        .part-form label { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+        .part-form input, .part-form select { width: 100%; }
+        .part-form button { min-width: 150px; }
+        input, select, button {
+            padding: 11px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--panel-soft);
+            color: var(--text);
+            font-family: inherit;
+        }
+        input::placeholder { color: #78818f; }
+        button {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            transition: background .2s ease;
+        }
+        button:hover { background: #cc0000; }
+        .parts-table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: var(--panel-soft); border-radius: 8px; }
+        th, td { padding: 13px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+        th { background: var(--panel); color: var(--accent-2); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+        tr:hover td { background: #29303c; }
+        .badge { padding: 4px 9px; border-radius: 4px; font-size: 11px; font-weight: 800; display: inline-block; }
+        .badge.Purchased { background: #24482d; color: var(--good); }
+        .badge.Wishlist { background: #6a2222; color: #ffdada; }
+        .badge.Installed { background: #2d4666; color: #b9d8ff; }
+        .delete-btn {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--line);
+            padding: 7px 11px;
+            font-size: 11px;
+            width: auto;
+        }
+        .delete-btn:hover { background: var(--accent); color: white; }
+        .empty-row { color: var(--muted); font-style: italic; text-align: center; }
+        .tiny { font-size: 11px; color: var(--muted); }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-mark">G</div>
+                <div>
+                    <h1>{{ car.year }} {{ car.make }} {{ car.model }}</h1>
+                    <div class="tagline">Build Planner</div>
+                </div>
+            </div>
+            <div style="display:flex; gap: 12px; align-items:center;">
+                <a href="/" class="back-btn">← Garage</a>
+                <a href="/logout" class="back-btn">Logout</a>
+            </div>
+        </div>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Budget</h3>
+                <p>${{ "{:,.2f}".format(car.budget) }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Spent</h3>
+                <p>${{ "{:,.2f}".format(total_spent) }}</p>
+            </div>
+            <div class="stat-card good">
+                <h3>Remaining Budget</h3>
+                <p>${{ "{:,.2f}".format(remaining_budget) }}</p>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2>Build Details</h2>
+            <div class="tiny">Owner: {{ owner_username }} | Trim: {{ car.trim }}</div>
+        </section>
+
+        <section class="section-card">
+            <h2>Budget Settings</h2>
+            <form action="/update_budget/{{ car.id }}" method="POST">
+                <div class="part-form">
+                    <div class="field">
+                        <label for="budget">Budget ($)</label>
+                        <input type="number" step="0.01" id="budget" name="budget" value="{{ car.budget }}">
+                    </div>
+                    <button type="submit">Update Budget</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="section-card">
+            <h2>Add Part / Mod</h2>
+            <form class="part-form" action="/add_part/{{ car.id }}" method="POST">
+                <div class="field" style="flex: 2; min-width: 220px;">
+                    <label for="name">Part Name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g., Coilovers, Turbo Kit" required>
+                </div>
+                <div class="field">
+                    <label for="category">Category</label>
+                    <select id="category" name="category">
+                        {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="cost">Cost</label>
+                    <input type="number" id="cost" name="cost" placeholder="Cost ($)" step="0.01" required>
+                </div>
+                <div class="field">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        {% for status in statuses %}
+                        <option value="{{ status }}">{{ status }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field" style="flex: 2; min-width: 220px;">
+                    <label for="notes">Notes</label>
+                    <input type="text" id="notes" name="notes" placeholder="Notes / spec target">
+                </div>
+                <button type="submit">Add to Build</button>
+            </form>
+        </section>
+
+        <section class="section-card">
+            <h2>Collaborators</h2>
+            <div class="part-form">
+                <form action="/invite/{{ car.id }}" method="POST" class="part-form" style="gap: 12px;">
+                    <div class="field">
+                        <label for="email">Invite by email</label>
+                        <input type="email" id="email" name="email" placeholder="friend@example.com" required>
+                    </div>
+                    <div class="field">
+                        <label for="role">Role</label>
+                        <select id="role" name="role">
+                            <option>Collaborator</option>
+                            <option>Project Manager</option>
+                            <option>Budget Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit">Invite</button>
+                </form>
+            </div>
+            {% if collaborators %}
+            <ul>
+                {% for collaborator in collaborators %}
+                <li>{{ collaborator.username }} — {{ collaborator.role }}{% if collaborator.accepted_at %} — accepted{% endif %}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="tiny">No collaborators yet.</div>
+            {% endif %}
+        </section>
+
+        <section class="section-card">
+            <h2>Cost Sharing</h2>
+            <form action="/update_split/{{ car.id }}" method="POST">
+                {% if participants %}
+                {% for participant in participants %}
+                <div class="part-form" style="margin-bottom: 12px;">
+                    <div class="field">
+                        <label>{{ participant.username }}</label>
+                        <input type="number" min="0" step="1" name="share_{{ participant.user_id }}" value="{{ participant.share_pct }}">
+                    </div>
+                </div>
+                {% endfor %}
+                <button type="submit">Save Split</button>
+                {% else %}
+                <div class="tiny">No split members yet.</div>
+                {% endif %}
+            </form>
+        </section>
+
+        <section class="section-card">
+            <h2>Payments</h2>
+            <form action="/record_payment/{{ car.id }}" method="POST" class="part-form">
+                <div class="field">
+                    <label for="payer_id">Payer</label>
+                    <select id="payer_id" name="payer_id">
+                        {% for participant in participants %}
+                        <option value="{{ participant.user_id }}">{{ participant.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="payee_id">Payee</label>
+                    <select id="payee_id" name="payee_id">
+                        {% for participant in participants %}
+                        <option value="{{ participant.user_id }}">{{ participant.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" name="amount" value="0" step="0.01">
+                </div>
+                <div class="field">
+                    <label for="note">Note</label>
+                    <input type="text" id="note" name="note" placeholder="Payment note">
+                </div>
+                <button type="submit">Record Payment</button>
+            </form>
+            {% if payments %}
+            <ul>
+                {% for payment in payments %}
+                <li>{{ payment.payer_username }} paid {{ payment.payee_username }} ${{ "{:,.2f}".format(payment.amount) }}{% if payment.note %} — {{ payment.note }}{% endif %}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="tiny">No payments recorded yet.</div>
+            {% endif %}
+        </section>
+
+        <section class="section-card">
+            <h2>Wishlist / Purchased / Installed</h2>
+            <div class="parts-grid" style="display: grid; grid-template-columns: repeat(3, minmax(160px, 1fr)); gap: 12px;">
+                {% for status in statuses %}
+                <div>
+                    <h3>{{ status }}</h3>
+                    {% if parts_by_status[status] %}
+                    <ul>
+                        {% for part in parts_by_status[status] %}
+                        <li>{{ part.name }} — ${{ "{:,.2f}".format(part.cost) }}{% if part.notes %} — {{ part.notes }}{% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="tiny">No {{ status }} parts.</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2>Parts &amp; Mods</h2>
+            <div class="parts-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Part Name</th>
+                            <th>Category</th>
+                            <th>Cost</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if parts %}
+                        {% for part in parts %}
+                        <tr>
+                            <td>{{ part.name }}</td>
+                            <td>{{ part.category }}</td>
+                            <td>${{ "{:,.2f}".format(part.cost) }}</td>
+                            <td><span class="badge {{ part.status }}">{{ part.status }}</span></td>
+                            <td>{{ part.notes or '—' }}</td>
+                            <td>
+                                <form action="/delete_part/{{ car.id }}/{{ part.id }}" method="POST" style="margin:0;">
+                                    <button type="submit" class="delete-btn">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="empty-row">No parts added yet. Time to build.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2>Build Timeline</h2>
+            {% if edits %}
+            <ul>
+                {% for edit in edits %}
+                <li>{{ edit.created_at }} — {{ edit.username }} {{ edit.action }} {{ edit.details }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="tiny">No edit history yet.</div>
+            {% endif %}
+        </section>
+    </div>
+</body>
+</html>

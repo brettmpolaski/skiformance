@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garage Dashboard</title>
+    <style>
+        :root {
+            --page-bg: #0d1117;
+            --panel: #161b22;
+            --panel-soft: #202632;
+            --text: #eef2f6;
+            --muted: #acb3bd;
+            --line: #303a45;
+            --accent: #ff4d4d;
+            --accent-2: #ffd166;
+            --good: #71f0a8;
+            --shadow: rgba(0,0,0,.35);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Avenir Next', 'Helvetica Neue', 'Montserrat', 'Arial', sans-serif;
+            margin: 0;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 80% 5%, rgba(255,77,77,.12), transparent 20%),
+                var(--page-bg);
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .shell { max-width: 1100px; margin: 0 auto; }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 16px;
+            margin-bottom: 26px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 900;
+            font-size: 20px;
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+        .brand h1 { margin: 0; font-size: 28px; }
+        .tagline { color: var(--muted); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+        .nav-actions { display: flex; gap: 10px; align-items: center; }
+        .nav-actions a, .nav-actions button { color: var(--text); background: var(--panel-soft); border: 1px solid var(--line); border-radius: 8px; text-decoration: none; padding: 10px 14px; font-weight: 700; }
+        .nav-actions a:hover { background: var(--line); }
+        .garage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 20px 0 32px;
+        }
+        .car-card {
+            background: var(--panel-soft);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            box-shadow: 0 12px 30px var(--shadow);
+            transition: transform .2s ease, background .2s ease, border-color .2s ease;
+        }
+        .car-card:hover {
+            transform: translateY(-5px);
+            background: #29303c;
+            border-color: var(--accent-2);
+        }
+        .car-card h3 { margin: 0 0 8px; color: var(--accent-2); font-size: 22px; }
+        .car-card p { margin: 5px 0; color: var(--muted); }
+        .car-card .budget { color: var(--good); font-weight: 700; }
+        .empty-state {
+            background: var(--panel-soft);
+            border: 1px dashed var(--line);
+            color: var(--muted);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .add-button {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            width: fit-content;
+            min-width: 180px;
+            padding: 12px 22px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background .2s ease;
+        }
+        .add-button:hover { background: #cc0000; }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-mark">G</div>
+                <div>
+                    <h1>Garage Control</h1>
+                    <div class="tagline">Local build planner</div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <a href="/new_car">+ Add Car</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+
+        <section style="margin-top: 30px;">
+            <div class="brand">
+                <div class="brand-mark" style="width:32px;height:32px;font-size:14px;">+</div>
+                <div>
+                    <h2 style="margin:0;">Garage Inventory</h2>
+                </div>
+            </div>
+        </section>
+
+        {% if cars %}
+        <div class="garage-grid">
+            {% for car in cars %}
+            <a href="/car/{{ car.id }}" class="car-card">
+                <h3>{{ car.year }} {{ car.make }} {{ car.model }}</h3>
+                <p>Trim: {{ car.trim }}</p>
+                <p class="budget">Budget: ${{ "{:,.2f}".format(car.budget) }}</p>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>No cars in the garage yet.</h3>
+            <p>Add your first build to begin planning the budget and parts list.</p>
+            <a class="add-button" href="/new_car">Add Your First Car</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

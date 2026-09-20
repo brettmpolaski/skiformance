@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Garage Account</title>
+    <style>
+        :root {
+            --page-bg: #0d1117;
+            --panel: #161b22;
+            --panel-soft: #202632;
+            --text: #eef2f6;
+            --muted: #acb3bd;
+            --line: #303a45;
+            --accent: #ff4d4d;
+            --accent-2: #ffd166;
+            --shadow: rgba(0,0,0,.35);
+            --danger: #ff9b9b;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Avenir Next', 'Helvetica Neue', 'Montserrat', 'Arial', sans-serif;
+            margin: 0;
+            color: var(--text);
+            background: var(--page-bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .auth-shell {
+            width: min(460px, 100%);
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: 0 12px 30px var(--shadow);
+            padding: 28px;
+        }
+        h1 { margin-top: 0; color: var(--accent-2); font-size: 30px; }
+        p { color: var(--muted); }
+        form { display: flex; flex-direction: column; gap: 14px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 11px; font-weight: 800; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+        input { padding: 11px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel-soft); color: var(--text); }
+        button { background: var(--accent); color: #fff; font-weight: 900; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; }
+        button:hover { background: #cc0000; }
+        .links { margin-top: 16px; color: var(--muted); font-size: 13px; }
+        .links a { color: var(--accent-2); text-decoration: none; }
+        .error { color: var(--danger); background: #351616; border: 1px solid var(--danger); border-radius: 8px; padding: 10px; margin-bottom: 14px; }
+        .policy { color: var(--muted); font-size: 11px; }
+    </style>
+</head>
+<body>
+    <div class="auth-shell">
+        <h1>Create Account</h1>
+        <p>Join your local garage network.</p>
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+        <form method="POST" action="/register">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="policy">Password must be at least 8 characters with one uppercase letter, one number, and one symbol.</div>
+            <button type="submit">Create Account</button>
+        </form>
+        <div class="links">
+            Already have an account? <a href="/login">Sign in</a>
+        </div>
+    </div>
+</body>
+</html>
